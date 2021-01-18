@@ -67,10 +67,13 @@ class App extends React.Component {
   }
 
   editItem(key) {
+    const filteredItems = this.state.items.filter( item =>
+      item.key !== key);
     const selectedItem = this.state.items.find (item => 
       item.key === key);
     
     this.setState ({
+      items : filteredItems,
       currentItem : {
         text : selectedItem.text,
         key : selectedItem.key,
