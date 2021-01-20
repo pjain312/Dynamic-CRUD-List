@@ -15,19 +15,25 @@ class App extends React.Component {
       items:[],
       currentItem:{
         text:'',
-        key: '',
+        key: Date.now(),
         desc:'',
-        season:''
+        season:'',
+        editable:false
       }
-      
     }
     this.addItem = this.addItem.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
     this.editItem = this.editItem.bind(this);
+    this.editItem1 = this.editItem1.bind(this);
+    this.editItem2 = this.editItem2.bind(this);
+    this.changeEdit = this.changeEdit.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
   }
   addItem(e){
     e.preventDefault();
+
     const newItem = this.state.currentItem;
     if(newItem.text!==""){
       const items = [...this.state.items, newItem];
@@ -35,10 +41,12 @@ class App extends React.Component {
       items: items,
       currentItem:{
         text:'',
-        key:'',
+        key: Date.now(),
         desc:'',
-        season:''
-      }
+        season:'',
+        editable:false
+      },
+      
     });
     }
   }
@@ -47,16 +55,12 @@ class App extends React.Component {
     const value = target.value;
     const name = target.name;
     this.setState({
-    
       currentItem:{
         ...this.state.currentItem, 
-        key: Date.now(),
         [name]:value
-      
       }
     })
 }
-  
 
   deleteItem(key) {
     const filteredItems = this.state.items.filter( item =>
@@ -66,42 +70,68 @@ class App extends React.Component {
       })
   }
 
-  editItem(key) {
+  changeEdit(item){
+    var item = item;
+    item.editable=true;
+    this.setState({item});
+  }
+
+  editItem(item, value)
+   {
+    var item = item;
+    item.text = value
+    this.setState({item});
+  }
+
+  editItem1(item, value)
+   {
+    var item = item;
+    item.desc = value
+    this.setState({item});
+  }
+
+  editItem2(item, value)
+  {
+    var item = item;
+    item.season = value
+    this.setState({item});
+  }
+
+  handleUpdate(gItem)
+  {
+    const newItem = gItem;
+    newItem.editable = false;
     const filteredItems = this.state.items.filter( item =>
-      item.key !== key);
-    const selectedItem = this.state.items.find (item => 
-      item.key === key);
-    
-    this.setState ({
-      items : filteredItems,
-      currentItem : {
-        text : selectedItem.text,
-        key : selectedItem.key,
-        desc : selectedItem.desc,
-        season: selectedItem.season
-      }
+      item.key !== newItem.key);
+      filteredItems.push(newItem);
+      this.setState({
+      items:filteredItems     
     })
   }
-  
+
+  handleCancel(gItem){
+    var item = gItem;
+    item.editable= false;
+    this.setState({item});
+  }
  render(){
   return (
     <div className="App">
-      <header>
-        <form id="form" onSubmit={this.addItem}>
-          <label> Fruit Name </label>
-          <input name="text" type="text" placeholder="Enter Fruit Name" value= {this.state.currentItem.text} onChange={this.handleInput}></input>
-          <label> Fruit Description </label>
-          <input name = "desc" type="text" placeholder="Enter Fruit Desc" value= {this.state.currentItem.desc} onChange={this.handleInput}></input>
-          <label> Fruit Season </label>
-          <input name="season" type="text" placeholder="Enter Fruit Season" value= {this.state.currentItem.season} onChange={this.handleInput}></input>
 
-          <button type="submit">Add Fruit</button>
-        </form>
-      </header>
-
-      <ListItems items = {this.state.items}
-        deleteItem = {this.deleteItem}
-        editItem = {this.editItem}></ListItems>
+      <ListItems text = {this.state.currentItem.text}
+          desc = {this.state.currentItem.desc}
+          season = {this.state.currentItem.season}
+          handleInput = {this.handleInput}
+          addItem = {this.addItem}
+          items = {this.state.items}
+          deleteItem = {this.deleteItem}
+          editItem = {this.editItem}
+          editItem1 = {this.editItem1}
+          editItem2 = {this.editItem2}
+          changeEdit = {this.changeEdit}
+          handleUpdate = {this.handleUpdate}
+          handleCancel = {this.handleCancel}
+         ></ListItems>
 
     </div>
   );
